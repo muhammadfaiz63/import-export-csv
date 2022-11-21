@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -69,12 +69,18 @@ export default function App() {
     },
   ]
 
+  const [rows, setRows] = useState([])
+
   let headers = [
     { label: 'Nama', key: 'name' },
     { label: 'Nim', key: 'nim' },
     { label: 'Jurusan', key: 'major' },
     { label: 'Universitas', key: 'university' },
   ]
+
+  useEffect(() => {
+    setRows(data)
+  }, [rows])
 
   return (
     <Box
@@ -124,7 +130,7 @@ export default function App() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item) => (
+          {rows.map((item) => (
             <TableRow>
               <TableCell>{item.name}</TableCell>
               <TableCell>{item.nim}</TableCell>
