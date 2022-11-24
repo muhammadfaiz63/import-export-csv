@@ -63,6 +63,12 @@ export default function App() {
       major: 'Teknologi Informasi',
       university: 'Universitas Darma Persada ',
     },
+    {
+      nim: 2020230013,
+      name: 'Maisyarah Salsabila',
+      major: 'Teknologi Informasi',
+      university: 'Universitas Darma Persada ',
+    },
   ]
 
   const [rows, setRows] = useState([])
@@ -85,19 +91,22 @@ export default function App() {
     reader.readAsText(value)
   }
 
-  const processCSV = (str, delim = ';') => {
+  function renameObject(oldObj, newObj) {
+    return oldObj.map((item, index) => {
+      item = newObj[index]
+      return item
+    })
+  }
+
+  const processCSV = async (str, delim = ';') => {
     const headers = str.slice(0, str.indexOf('\n')).split(delim)
     const rows = str.slice(str.indexOf('\n') + 1).split('\n')
-    console.log('str', str)
-
+    const newHeaders = ['nim', 'name', 'major', 'university']
+    const resultHeaders = await renameObject(headers, newHeaders)
     const newArray = rows.map((row) => {
       const values = row.split(delim)
-      const eachObject = headers.reduce((obj, header, i) => {
-        console.log('values', values[i].replace(/^"(.*)"$/, '$1'))
-        obj[header.replace(/^"(.*)"$/, '$1')] = values[i].replace(
-          /^"(.*)"$/,
-          '$1',
-        )
+      const eachObject = resultHeaders.reduce((obj, header, i) => {
+        obj[header] = values[i].replace(/^"(.*)"$/, '$1')
         return obj
       }, {})
       return eachObject
