@@ -13,7 +13,6 @@ import { Button } from '@mui/material'
 
 export default function App() {
   const uploadedDoc = useRef(null)
-  const [csvArray, setCsvArray] = useState([])
   const data = [
     {
       nim: 2020230044,
@@ -69,15 +68,21 @@ export default function App() {
       major: 'Teknologi Informasi',
       university: 'Universitas Darma Persada ',
     },
+    {
+      nim: 2020230016,
+      name: 'Dinda Nurul',
+      major: 'Teknologi Informasi',
+      university: 'Universitas Darma Persada ',
+    },
   ]
 
   const [rows, setRows] = useState([])
 
   let headers = [
-    { label: 'name', key: 'name' },
-    { label: 'nim', key: 'nim' },
-    { label: 'major', key: 'major' },
-    { label: 'university', key: 'university' },
+    { label: 'Nama', key: 'name' },
+    { label: 'Nim', key: 'nim' },
+    { label: 'Jurusan', key: 'major' },
+    { label: 'Universitas', key: 'university' },
   ]
 
   const handleImportCSV = (value) => {
@@ -117,7 +122,7 @@ export default function App() {
   console.log('new rows', rows)
 
   useEffect(() => {
-    // setRows(data)
+    setRows(data)
   }, [])
 
   return (
@@ -164,6 +169,17 @@ export default function App() {
             align='left'
             sx={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
             Import CSV To JSON
+          </Typography>
+        </Button>
+        <Button
+          onClick={() => setRows([])}
+          variant='contained'
+          color='info'
+          sx={{ ml: 1 }}>
+          <Typography
+            align='left'
+            sx={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
+            Clear Data
           </Typography>
         </Button>
       </Box>
