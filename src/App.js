@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './App.css'
-import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
-import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import moment from 'moment'
 import { CSVLink } from 'react-csv'
-import { Container } from '@mui/system'
 import { Button } from '@mui/material'
 
 export default function App() {
+  const uploadedDoc = useRef(null)
+  const [csvArray, setCsvArray] = useState([])
   const data = [
     {
       nim: 2020230044,
@@ -72,15 +68,48 @@ export default function App() {
   const [rows, setRows] = useState([])
 
   let headers = [
-    { label: 'Nama', key: 'name' },
-    { label: 'Nim', key: 'nim' },
-    { label: 'Jurusan', key: 'major' },
-    { label: 'Universitas', key: 'university' },
+    { label: 'name', key: 'name' },
+    { label: 'nim', key: 'nim' },
+    { label: 'major', key: 'major' },
+    { label: 'university', key: 'university' },
   ]
 
+  const handleImportCSV = (value) => {
+    const reader = new FileReader()
+
+    reader.onload = function (e) {
+      const text = e.target.result
+      processCSV(text)
+    }
+
+    reader.readAsText(value)
+  }
+
+  const processCSV = (str, delim = ';') => {
+    const headers = str.slice(0, str.indexOf('\n')).split(delim)
+    const rows = str.slice(str.indexOf('\n') + 1).split('\n')
+    console.log('str', str)
+
+    const newArray = rows.map((row) => {
+      const values = row.split(delim)
+      const eachObject = headers.reduce((obj, header, i) => {
+        console.log('values', values[i].replace(/^"(.*)"$/, '$1'))
+        obj[header.replace(/^"(.*)"$/, '$1')] = values[i].replace(
+          /^"(.*)"$/,
+          '$1',
+        )
+        return obj
+      }, {})
+      return eachObject
+    })
+    setRows(newArray)
+  }
+
+  console.log('new rows', rows)
+
   useEffect(() => {
-    setRows(data)
-  }, [rows])
+    // setRows(data)
+  }, [])
 
   return (
     <Box
@@ -111,8 +140,17 @@ export default function App() {
             </Typography>
           </Button>
         </CSVLink>
-
-        <Button variant='contained' color='info' sx={{ ml: 1 }}>
+        <input
+          type='file'
+          ref={uploadedDoc}
+          hidden
+          onChange={(e) => handleImportCSV(e?.target?.files[0])}
+        />
+        <Button
+          onClick={() => uploadedDoc.current.click()}
+          variant='contained'
+          color='info'
+          sx={{ ml: 1 }}>
           <Typography
             align='left'
             sx={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
